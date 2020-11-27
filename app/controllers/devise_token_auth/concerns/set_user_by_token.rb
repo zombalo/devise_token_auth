@@ -44,18 +44,6 @@ module DeviseTokenAuth::Concerns::SetUserByToken
     # client isn't required, set to 'default' if absent
     @token.client ||= 'default'
 
-    # check for an existing user, authenticated via warden/devise, if enabled
-    if DeviseTokenAuth.enable_standard_devise_support
-      devise_warden_user = warden.user(rc.to_s.underscore.to_sym)
-      if devise_warden_user && devise_warden_user.tokens[@token.client].nil?
-        @used_auth_by_token = false
-        @resource = devise_warden_user
-        # REVIEW: The following line _should_ be safe to remove;
-        #  the generated token does not get used anywhere.
-        # @resource.create_new_auth_token
-      end
-    end
-
     # user has already been found and authenticated
     return @resource if @resource && @resource.is_a?(rc)
 
